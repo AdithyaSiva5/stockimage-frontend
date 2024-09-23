@@ -1,0 +1,27 @@
+.PdfEdit {
+    /* Optional: Additional styles for the modal */
+}
+
+.pdfPageContainer {
+    /* Style to contain the PDF page and its overlay */
+}
+
+.pdfPagePreview {
+    position: relative;
+}
+
+.pdfPageOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.editButton {
+    margin-left: 10px;
+}

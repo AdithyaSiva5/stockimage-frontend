@@ -1,0 +1,45 @@
+/* .upload-pdf-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  } */
+  
+  .upload-title {
+    font-size: 2rem;
+    color: var(--platinum);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .file-input {
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .btn {
+    margin-top: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .upload-title {
+      font-size: 1.5rem;
+    }
+  
+    .file-input {
+      font-size: 0.9rem;
+    }
+  
+    .btn {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+  
