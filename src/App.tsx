@@ -11,8 +11,14 @@ const Profile = lazy(() => import('./pages/profile/profile'));
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
+
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = React.useContext(AuthContext);
+  const { isAuthenticated, isLoading } = React.useContext(AuthContext);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };
 
@@ -25,12 +31,9 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            {/* <Route path="/YourFiles" element={<YourFiles />} /> */}
-            {/* <Route path="/profile" element={<Profile />} /> */}
-            {/* <Route path="/upload" element={<UploadPage />} /> */}
-            <Route path="/upload" element={<UploadPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/upload" element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/gallery" element={<ProtectedRoute><Gallery /></ProtectedRoute>} />
           </Routes>
         </Suspense>
       </Router>

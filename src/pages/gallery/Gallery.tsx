@@ -55,14 +55,14 @@ const Gallery: React.FC = () => {
   const handleEdit = (image: Image) => {
     setEditingId(image._id);
     setEditTitle(image.title);
-    setError(null);  // Clear any previous error
+    setError(null);  
   };
 
   const handleSaveEdit = async () => {
     if (!editingId) return;
 
     if (editTitle.trim() === '') {
-      setError('Title cannot be empty');  // Set error message if title is empty
+      setError('Title cannot be empty'); 
       return;
     }
 
@@ -70,7 +70,7 @@ const Gallery: React.FC = () => {
       await axiosInstance.put(`/gallery/${editingId}`, { title: editTitle });
       setImages(images.map(img => img._id === editingId ? { ...img, title: editTitle } : img));
       setEditingId(null);
-      setError(null);  // Clear error on successful save
+      setError(null);  
     } catch (error) {
       console.error('Error updating image:', error);
     }

@@ -5,43 +5,44 @@ import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import axiosInstance from '../../axios/axios';
 
-interface FileWithPreview extends File {
+interface FileItem {
+  id: string;
+  file: File;
   preview: string;
   title: string;
 }
 
 const UploadPage: React.FC = () => {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
+  const [fileItems, setFileItems] = useState<FileItem[]>([]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles.map(file => Object.assign(file, {
+    const newFileItems = acceptedFiles.map(file => ({
+      id: Math.random().toString(36).substr(2, 9),
+      file,
       preview: URL.createObjectURL(file),
-      title: ''
-    })));
+      title: file.name
+    }));
+    setFileItems(prevItems => [...prevItems, ...newFileItems]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const removeFile = (file: FileWithPreview) => {
-    const newFiles = files.filter(f => f !== file);
-    setFiles(newFiles);
+  const removeFile = (id: string) => {
+    setFileItems(prevItems => prevItems.filter(item => item.id !== id));
   };
 
-  const updateFileTitle = (file: FileWithPreview, title: string) => {
-    const newFiles = files.map(f => {
-      if (f === file) {
-        return { ...f, title };
-      }
-      return f;
-    });
-    setFiles(newFiles);
+  const updateFileTitle = (id: string, title: string) => {
+    setFileItems(prevItems => prevItems.map(item => 
+      item.id === id ? { ...item, title } : item
+    ));
   };
 
   const uploadFiles = async () => {
     const formData = new FormData();
-    files.forEach((file, index) => {
-      formData.append(`images`, file);
-      formData.append(`titles[${index}]`, file.title);
+
+    fileItems.forEach((item, index) => {
+      formData.append(`images`, item.file);
+      formData.append(`titles[${index}]`, item.title);
     });
 
     try {
@@ -49,7 +50,7 @@ const UploadPage: React.FC = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log('Upload successful', response.data);
-      setFiles([]);
+      setFileItems([]);
     } catch (error) {
       console.error('Upload failed', error);
     }
@@ -68,21 +69,21 @@ const UploadPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {files.length > 0 && (
+      {fileItems.length > 0 && (
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-4">Selected Files:</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {files.map((file) => (
-              <div key={file.name} className="relative">
-                <img src={file.preview} alt={file.name} className="w-full h-32 object-cover rounded-lg" />
+            {fileItems.map((item) => (
+              <div key={item.id} className="relative">
+                <img src={item.preview} alt={item.title} className="w-full h-32 object-cover rounded-lg" />
                 <input
                   type="text"
                   placeholder="Enter image title"
-                  value={file.title}
-                  onChange={(e) => updateFileTitle(file, e.target.value)}
-                  className="mt-2"
+                  value={item.title}
+                  onChange={(e) => updateFileTitle(item.id, e.target.value)}
+                  className="mt-2 w-full p-2 border rounded"
                 />
-                <button onClick={() => removeFile(file)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">
+                <button onClick={() => removeFile(item.id)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">
                   <X size={16} />
                 </button>
               </div>
